@@ -25,10 +25,4 @@ else:
 
 
   
-  #
-    #check if B>=S
-#elif selType == "I" or "i":
-  #print("inquiry!")
-#else:
-  #print("Your entry is invalid, please try again.")
  
