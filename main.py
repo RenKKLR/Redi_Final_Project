@@ -1,32 +1,64 @@
 from tkinter import *
 
 def buy():
-  sName = stockname.get()
-  sID = stockid.get()
-  sPrice = stockprice.get()
-  sAmount = stockamount.get()
-  sDate = stockdate.get()
-  print(sName, sID, sPrice, sAmount, sDate)
+  global sName_buy
+  global sAmount_buy
+  sName_buy = stockname.get()
+  sID_buy = stockid.get()
+  sPrice_buy = stockprice.get()
+  sAmount_buy = stockamount.get()
+  sDate_buy = stockdate.get()
+  print(sName_buy, sID_buy, sPrice_buy, sAmount_buy, sDate_buy)
   stockname.delete(0, END)
   stockid.delete(0, END)
   stockprice.delete(0, END)
   stockamount.delete(0, END)
   stockdate.delete(0, END)
-
+  
 #creating the file buy
   file = open("buy.txt", "a")
-  file.write(sName)
-  file.write(sID)
-  file.write(sPrice)
-  file.write(sAmount)
-  file.write(sDate)
-  print("Stock", sName, " has been submitted successfully")
+  file.write(sName_buy)
+  file.write(sID_buy)
+  file.write(sPrice_buy)
+  file.write(sAmount_buy)
+  file.write(sDate_buy)
+  print("Stock", sName_buy, " has been submitted successfully")
+
+def sell():
+  sName_sell = stockname.get()
+  sID_sell = stockid.get()
+  sPrice_sell = stockprice.get()
+  sAmount_sell = stockamount.get()
+  sDate_sell = stockdate.get()
+  print(sName_sell, sID_sell, sPrice_sell, sAmount_sell, sDate_sell)
+  stockname.delete(0, END)
+  stockid.delete(0, END)
+  stockprice.delete(0, END)
+  stockamount.delete(0, END)
+  stockdate.delete(0, END)
+#check if there is enough buy to sell  
+ # if sName_sell == sName_buy:
+  #  if sAmount_sell <= sAmount_buy:
+  #creating the file sell
+  file = open("sell.txt", "a")
+  file.write(sName_sell)
+  file.write(sID_sell)
+  file.write(sPrice_sell)
+  file.write(sAmount_sell)
+  file.write(sDate_sell)
+  print("Stock", sName_sell, " has been submitted successfully")
+  #  else:
+     # print("You don't have enough "+ sName_buy)
+  #else:
+   # print("You don't have "+ sName_sell)
+
+  
 
 #screen design
 screen = Tk()
 screen.geometry("500x500")
 screen.title("Redi Final Project")
-heading = Label(text="Trading Performance Inquiry", bg="grey", fg="black", width="500")
+heading = Label(text="Trading Performance Query", bg="grey", fg="black", width="500")
 heading.pack()
 
 #label defnition and positon
@@ -54,15 +86,16 @@ stockamount.place(x = 270, y = 170)
 stockdate.place(x = 15, y = 240)
 
 #place button to buy or sell
-buy = Button(screen, text ="Buy", command=buy, bg = "grey")
-sell = Button(screen, text = "Sell", bg ="grey")
-buy.place(x = 15, y = 290)
-sell.place(x = 75, y = 290)
+buy_btn = Button(screen, text ="Buy", command=buy, bg = "grey")
+sell_btn = Button(screen, text = "Sell", command=sell, bg ="grey")
+buy_btn.place(x = 15, y = 290)
+sell_btn.place(x = 75, y = 290)
 
+screen.mainloop()
 
-print("Welcome to Trading Performance Inquiry!")
+print("Welcome to Trading Performance Query!")
 
-selType = input("For a new entry of a transaction, please type E; to make an inquiry, please type I:\n")
+selType = input("For a new entry of a transaction, please type E; to make a query, please type I:\n")
 
 if selType == "E" or selType == "e":
   
