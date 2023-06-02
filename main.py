@@ -1,4 +1,5 @@
 from tkinter import *
+import csv
 
 def buy():
   global sName_buy
@@ -16,12 +17,12 @@ def buy():
   stockdate.delete(0, END)
   
 #creating the file buy
-  file = open("buy.txt", "a")
-  file.write(sName_buy)
-  file.write(sID_buy)
-  file.write(sPrice_buy)
-  file.write(sAmount_buy)
-  file.write(sDate_buy)
+  file = open("buy.csv", "a", newline="")
+  file.write(sName_buy + "\t")
+  file.write(sID_buy + "\t")
+  file.write(sPrice_buy + "\t")
+  file.write(sAmount_buy + "\t")
+  file.write(sDate_buy + "\n")
   print("Stock", sName_buy, " has been submitted successfully")
 
 def sell():
@@ -37,15 +38,19 @@ def sell():
   stockamount.delete(0, END)
   stockdate.delete(0, END)
 #check if there is enough buy to sell  
- # if sName_sell == sName_buy:
+  '''with open('buy.txt') as file:
+    print(file.read())''' 
+  '''file = open('buy.txt', 'r')
+  read = file.readlines()'''
+  # if sName_sell == sName_buy:
   #  if sAmount_sell <= sAmount_buy:
   #creating the file sell
-  file = open("sell.txt", "a")
-  file.write(sName_sell)
-  file.write(sID_sell)
-  file.write(sPrice_sell)
-  file.write(sAmount_sell)
-  file.write(sDate_sell)
+  file = open("sell.csv", "a", newline="")
+  file.write(sName_sell + "\t")
+  file.write(sID_sell + "\t")
+  file.write(sPrice_sell + "\t")
+  file.write(sAmount_sell + "\t")
+  file.write(sDate_sell + "\n")
   print("Stock", sName_sell, " has been submitted successfully")
   #  else:
      # print("You don't have enough "+ sName_buy)
@@ -92,6 +97,11 @@ buy_btn.place(x = 15, y = 290)
 sell_btn.place(x = 75, y = 290)
 
 screen.mainloop()
+
+#calculate the performance
+#entry the name of stock
+#check if sAmount_sell=buy
+
 
 print("Welcome to Trading Performance Query!")
 
