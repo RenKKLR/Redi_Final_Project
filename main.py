@@ -18,10 +18,10 @@ def buy():
   
 #creating the file buy
   file = open("buy.csv", "a", newline="")
-  file.write(sName_buy + "\t")
-  file.write(sID_buy + "\t")
-  file.write(sPrice_buy + "\t")
-  file.write(sAmount_buy + "\t")
+  file.write(sName_buy + ",")
+  file.write(sID_buy + ",")
+  file.write(sPrice_buy + ",")
+  file.write(sAmount_buy + ",")
   file.write(sDate_buy + "\n")
   print("Stock", sName_buy, " has been submitted successfully")
 
@@ -31,33 +31,35 @@ def sell():
   sPrice_sell = stockprice.get()
   sAmount_sell = stockamount.get()
   sDate_sell = stockdate.get()
-  print(sName_sell, sID_sell, sPrice_sell, sAmount_sell, sDate_sell)
+  #print(sName_sell, sID_sell, sPrice_sell, sAmount_sell, sDate_sell)
   stockname.delete(0, END)
   stockid.delete(0, END)
   stockprice.delete(0, END)
   stockamount.delete(0, END)
   stockdate.delete(0, END)
-#check if there is enough buy to sell  
-  '''with open('buy.txt') as file:
-    print(file.read())''' 
-  '''file = open('buy.txt', 'r')
-  read = file.readlines()'''
-  # if sName_sell == sName_buy:
-  #  if sAmount_sell <= sAmount_buy:
-  #creating the file sell
-  file = open("sell.csv", "a", newline="")
-  file.write(sName_sell + "\t")
-  file.write(sID_sell + "\t")
-  file.write(sPrice_sell + "\t")
-  file.write(sAmount_sell + "\t")
-  file.write(sDate_sell + "\n")
-  print("Stock", sName_sell, " has been submitted successfully")
-  #  else:
-     # print("You don't have enough "+ sName_buy)
-  #else:
-   # print("You don't have "+ sName_sell)
-
+#check if a stock alread has been bought enough before to save the entry sell
+  with open('buy.csv') as buyfile:
+    buy_reader = csv.reader(buyfile)
+    next(buy_reader)
+    for row in buy_reader:
+      if sName_sell in row[0] and int(sAmount_sell) <= int(row[3]):
+        print(sName_sell + " is in the buylist and you have enough to sell!")
+        #creating the file sell
+        file = open("sell.csv", "a", newline="")
+        file.write(sName_sell + ",")
+        file.write(sID_sell + ",")
+        file.write(sPrice_sell + ",")
+        file.write(sAmount_sell + ",")
+        file.write(sDate_sell + "\n")
+        print("Stock", sName_sell, " has been submitted successfully")
+      elif sName_sell in row[0] and int(sAmount_sell) > int(row[3]):
+        print("You cannot sell " +sName_sell+" in amount "+ sAmount_sell + ", because you didn't buy that much!")
+      #else:
+       #print("You cannot sell " + sName_sell +", because you didn't buy it!")
+      
   
+  
+
 
 #screen design
 screen = Tk()
@@ -102,32 +104,4 @@ screen.mainloop()
 #entry the name of stock
 #check if sAmount_sell=buy
 
-
-print("Welcome to Trading Performance Query!")
-
-selType = input("For a new entry of a transaction, please type E; to make a query, please type I:\n")
-
-if selType == "E" or selType == "e":
-  
-  transType = input("For making an entry of a new Buy, please type B; of a new Sell, please type S:\n")
-  if transType == "B" or transType == "b":
-      stockName = input("What is the name of the stock?\n")
-      stockID = input("What is the ID of the stock?\n")
-      stockPrice = input("What is the single traded price of the stock in Euro?\n")
-      stockAmountBuy = input("What are the amounts of your traded stocks in piece?\n")
-      stockDate = input("What is the date of your transaction (DD/MM/YY)?\n")
-  elif transType == "S" or transType == "s":
-      print("Sell")
-  else:
-      print("Your entry is invalid, please try again!")
-
-
-else:
-  print("Your entry is invalid, please try again!")
-
-
-
-
-
-  
  
