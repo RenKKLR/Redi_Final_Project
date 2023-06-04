@@ -77,25 +77,17 @@ def create_window():
       next(buy_reader)
       for row in buy_reader:
         if sName_query in row[0]:
-          print("Buy: ")
-          print(row[0], row[2], row[3])
-          #print("A toal of Buy: " + str(int(row[2])*int(row[3])) + " Euro")
-          
-          '''
-          with open('sell.csv') as sellfile:
-            sell_reader = csv.reader(sellfile)
-            next(sell_reader)
-            for row in sell_reader:
-              if sName_query in row[0]:
-                print("Sell: " + row[0], row[2], row[3])
-                print("A toal of Sell: " + str(int(row[2])*int(row[3])) + " Euro")
-              '''    
-
-        
-        #else:
-          #print("Invalid: You didn't buy Stock "+ sName_query +"!")
-    
-  
+          print("Buy: ", row)
+         
+      #open sell.csv and print Sell rows      
+      with open('sell.csv') as sellfile:
+        sell_reader = csv.reader(sellfile)
+        next(sell_reader)
+        for row in sell_reader:
+          if sName_query in row[0]:
+            print("Sell: ", row)
+                
+         
   
   window = Tk()
   window.geometry("500x200")
