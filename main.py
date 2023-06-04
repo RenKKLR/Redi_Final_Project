@@ -1,15 +1,18 @@
 from tkinter import *
 import csv
 
+#save the entries in csv files buy or sell
+
 def buy():
   global sName_buy
   global sAmount_buy
+  global sPrice_buy
   sName_buy = stockname.get()
   sID_buy = stockid.get()
   sPrice_buy = stockprice.get()
   sAmount_buy = stockamount.get()
   sDate_buy = stockdate.get()
-  print(sName_buy, sID_buy, sPrice_buy, sAmount_buy, sDate_buy)
+  ##print(sName_buy, sID_buy, sPrice_buy, sAmount_buy, sDate_buy)
   stockname.delete(0, END)
   stockid.delete(0, END)
   stockprice.delete(0, END)
@@ -18,14 +21,17 @@ def buy():
   
 #creating the file buy
   file = open("buy.csv", "a", newline="")
-  file.write(sName_buy + ",")
-  file.write(sID_buy + ",")
-  file.write(sPrice_buy + ",")
-  file.write(sAmount_buy + ",")
+  file.write(sName_buy + ";")
+  file.write(sID_buy + ";")
+  file.write(sPrice_buy + ";")
+  file.write(sAmount_buy + ";")
   file.write(sDate_buy + "\n")
-  print("Stock", sName_buy, " has been submitted successfully")
+  print("Stock", sName_buy, " has been submitted successfully!")
 
 def sell():
+  global sName_sell
+  global sPrice_sell
+  global sAmount_sell
   sName_sell = stockname.get()
   sID_sell = stockid.get()
   sPrice_sell = stockprice.get()
@@ -37,25 +43,29 @@ def sell():
   stockprice.delete(0, END)
   stockamount.delete(0, END)
   stockdate.delete(0, END)
-#check if a stock alread has been bought enough before to save the entry sell
+
+  #before to save the entry sell in sell.csv, check if a stock alread has been bought enough 
   with open('buy.csv') as buyfile:
-    buy_reader = csv.reader(buyfile)
+    buy_reader = csv.reader(buyfile, delimiter=";")
     next(buy_reader)
     for row in buy_reader:
       if sName_sell in row[0] and int(sAmount_sell) <= int(row[3]):
-        print(sName_sell + " is in the buylist and you have enough to sell!")
         #creating the file sell
         file = open("sell.csv", "a", newline="")
-        file.write(sName_sell + ",")
-        file.write(sID_sell + ",")
-        file.write(sPrice_sell + ",")
-        file.write(sAmount_sell + ",")
+        file.write(sName_sell + ";")
+        file.write(sID_sell + ";")
+        file.write(sPrice_sell + ";")
+        file.write(sAmount_sell + ";")
         file.write(sDate_sell + "\n")
         print("Stock", sName_sell, " has been submitted successfully")
       elif sName_sell in row[0] and int(sAmount_sell) > int(row[3]):
-        print("You cannot sell " +sName_sell+" in amount "+ sAmount_sell + ", because you didn't buy that much!")
+        print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + "share(s), because you don't have enough of this stock!")
+      
+      #??????elif sName_sell not in row[0]:
+        #print("You can't sell " + sName_sell +", because you didn't buy it!")
+        
       #else:
-       #print("You cannot sell " + sName_sell +", because you didn't buy it!")
+        #?????return
 
 #create a new window to do a single query and display the result
 def create_window():
@@ -67,7 +77,8 @@ def create_window():
       next(buy_reader)
       for row in buy_reader:
         if sName_query in row[0]:
-          print("Buy: " + row[0], row[2], row[3])
+          print("Buy: ")
+          print(row[0], row[2], row[3])
           #print("A toal of Buy: " + str(int(row[2])*int(row[3])) + " Euro")
           
           '''
@@ -102,6 +113,7 @@ def create_window():
   submit_btn = Button(window,text ="Submit", command=submit, bg="grey")
   submit_btn.place(x=15, y=150)
 
+  window.mainloop()
   
 #screen design
 screen = Tk()
@@ -137,10 +149,10 @@ stockdate.place(x = 15, y = 240)
 #place button to buy or sell or do a single query
 buy_btn = Button(screen, text ="Buy", command=buy, bg = "grey")
 sell_btn = Button(screen, text = "Sell", command=sell, bg ="grey")
-query_btn = Button(screen, text="Single Query ", command=create_window, bg="grey")
+query_btn = Button(screen, text="Single Stock Query", command=create_window, bg="grey")
 buy_btn.place(x = 15, y = 290)
-sell_btn.place(x = 75, y = 290)
-query_btn.place(x=15, y=330)
+sell_btn.place(x = 85, y = 290)
+query_btn.place(x=15, y=333)
 
 screen.mainloop()
 
