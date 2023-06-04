@@ -1,6 +1,8 @@
 from tkinter import *
 import csv
 
+
+
 #save the entries in csv files buy or sell
 
 def buy():
@@ -19,7 +21,7 @@ def buy():
   stockamount.delete(0, END)
   stockdate.delete(0, END)
   
-#creating the file buy
+#creating the file buy.csv
   file = open("buy.csv", "a", newline="")
   file.write(sName_buy + ";")
   file.write(sID_buy + ";")
@@ -27,6 +29,16 @@ def buy():
   file.write(sAmount_buy + ";")
   file.write(sDate_buy + "\n")
   print("Stock", sName_buy, " has been submitted successfully!")
+
+def single_stock_sum(filename, stock_name):
+  single_stock_sum = 0
+  with open(filename) as transaction_file:
+    transactions = csv.reader(transaction_file, delimiter=";")
+    next(transactions)
+    for transaction in transactions:
+      if stock_name == transaction[0]: 
+        single_stock_sum += int(transaction[3])
+  return single_stock_sum
 
 def sell():
   global sName_sell
@@ -45,22 +57,27 @@ def sell():
   stockdate.delete(0, END)
 
   #before to save the entry sell in sell.csv, check if a stock alread has been bought enough 
-  with open('buy.csv') as buyfile:
-    buy_reader = csv.reader(buyfile, delimiter=";")
-    next(buy_reader)
-    for row in buy_reader:
-      if sName_sell in row[0] and int(sAmount_sell) <= int(row[3]):
-        #creating the file sell
-        file = open("sell.csv", "a", newline="")
-        file.write(sName_sell + ";")
-        file.write(sID_sell + ";")
-        file.write(sPrice_sell + ";")
-        file.write(sAmount_sell + ";")
-        file.write(sDate_sell + "\n")
-        print("Stock", sName_sell, " has been submitted successfully")
-      elif sName_sell in row[0] and int(sAmount_sell) > int(row[3]):
-        print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + "share(s), because you don't have enough of this stock!")
+  buy_single_stock_sum = single_stock_sum("buy.csv", sName_sell)
+  print(buy_single_stock_sum)
+  
+  sell_single_stock_sum = single_stock_sum("sell.csv", sName_sell) 
+  print(sell_single_stock_sum)
+  
+  can_be_bought = buy_single_stock_sum - sell_single_stock_sum >= int(sAmount_sell)
+
+  if can_be_bought:
       
+    #creating the file sell
+    file = open("sell.csv", "a", newline="")
+    file.write(sName_sell + ";")
+    file.write(sID_sell + ";")
+    file.write(sPrice_sell + ";")
+    file.write(sAmount_sell + ";")
+    file.write(sDate_sell + "\n")
+    print("Stock", sName_sell, " has been submitted successfully")
+  else:
+    print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + " share(s), because you don't have enough of this stock!")
+  
       #??????elif sName_sell not in row[0]:
         #print("You can't sell " + sName_sell +", because you didn't buy it!")
         
@@ -85,8 +102,7 @@ def create_window():
         next(sell_reader)
         for row in sell_reader:
           if sName_query in row[0]:
-            print("Sell: ", row)
-                
+            print("Sell: ", row)            
          
   
   window = Tk()
@@ -147,9 +163,3 @@ sell_btn.place(x = 85, y = 290)
 query_btn.place(x=15, y=333)
 
 screen.mainloop()
-
-#calculate the performance
-#entry the name of stock
-#check if sAmount_sell=buy
-
- 
