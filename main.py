@@ -106,23 +106,23 @@ def create_window():
           if sName_query == sell_transaction[0]:
             print("Sell: ", sell_transaction)  
       #check if bought=sold and do the calculation 
-      buy_single_stock_count = single_stock_count("buy.csv", sName_query)
-      sell_single_stock_count = single_stock_count("sell.csv", sName_query)
-      can_be_sold = buy_single_stock_count - sell_single_stock_count
-      if can_be_sold == 0:
-        print("bought=sold")
-        print("Total Buy: "+ str(total_single_sum("buy.csv", sName_query)))
-        print("Total Sell: " + str(total_single_sum("sell.csv", sName_query)))
-        performance_single = (total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
-        print("Performance of Stock " + sName_query + ": " + str(performance_single))
+        buy_single_stock_count = single_stock_count("buy.csv", sName_query)
+        sell_single_stock_count = single_stock_count("sell.csv", sName_query)
+        can_be_sold = buy_single_stock_count - sell_single_stock_count
+        if can_be_sold == 0 and buy_single_stock_count != 0:
+          print("bought=sold")
+          print("Total Buy: "+ str(total_single_sum("buy.csv", sName_query)))
+          print("Total Sell: " + str(total_single_sum("sell.csv", sName_query)))
+          performance_single = (total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
+          print("Performance of Stock " + sName_query + ": " + str(performance_single))
         
       #check if bought>sold, give the current sell pr and do the calculation  
-      else:
-        print("bought>sold")
+        elif can_be_sold >0:
+          print("bought>sold")
         
-
-        
-        #else:
+        else:
+          print("You didn't buy stock " + sName_query + "!") 
+        #??????else:  line99????
          # print("You didn't buy stock " + sName_query + "!")    
       
 
