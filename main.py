@@ -8,7 +8,7 @@ def buy():
   global sAmount_buy
   global sPrice_buy
   #get entries from input box
-  sName_buy = stockname.get()
+  sName_buy = stockname.get().title()
   sID_buy = stockid.get()
   sPrice_buy = stockprice.get()
   sAmount_buy = stockamount.get()
@@ -28,6 +28,7 @@ def buy():
   file.write(sDate_buy + "\n")
   print("Stock", sName_buy, " has been saved in buy.csv successfully!")
 
+#count total single stock bought or sold
 def single_stock_count(filename, stock_name):
   single_stock_count = 0
   with open(filename) as transaction_file:
@@ -43,7 +44,7 @@ def sell():
   global sPrice_sell
   global sAmount_sell
   #get entries from input box
-  sName_sell = stockname.get()
+  sName_sell = stockname.get().title()
   sID_sell = stockid.get()
   sPrice_sell = stockprice.get()
   sAmount_sell = stockamount.get()
@@ -89,7 +90,7 @@ def total_single_sum(filename, stock_name):
 #create a new window to do a single query
 def create_window():
   def submit():
-    sName_query = stockname_query.get()
+    sName_query = stockname_query.get().title()
     stockname_query.delete(0, END)
     #open file buy.csv and print all buy transactions
     with open('buy.csv') as buy_file:
@@ -110,22 +111,30 @@ def create_window():
         sell_single_stock_count = single_stock_count("sell.csv", sName_query)
         can_be_sold = buy_single_stock_count - sell_single_stock_count
         if can_be_sold == 0 and buy_single_stock_count != 0:
-          print("bought=sold")
-          print("Total Buy: "+ str(total_single_sum("buy.csv", sName_query)))
-          print("Total Sell: " + str(total_single_sum("sell.csv", sName_query)))
+          #print("bought=sold")
+          print(f"Bought: {buy_single_stock_count} share(s)")
+          print(f"Sold: {sell_single_stock_count} share(s)")
+          print(f"Total Buy €{total_single_sum('buy.csv', sName_query):.2f}")
+          print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
           performance_single = (total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
-          print("Performance of Stock " + sName_query + ": " + str(performance_single))
+          percentage_performance_single = performance_single *100
+          print(f"Performance of Stock {sName_query}: {percentage_performance_single:.2f}%")
         
-      #check if bought>sold, give the current sell pr and do the calculation  
+      #check if bought>sold, give the current sell price and do the calculation  
         elif can_be_sold >0:
-          print("bought>sold")
-        
+          #print("bought>sold")
+          print(f"Bought: {buy_single_stock_count} share(s)")
+          print(f"Sold: {sell_single_stock_count} share(s)")
+          current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
+          current_sell_sum = current_sell_price * (buy_single_stock_count - sell_single_stock_count)
+          performance_single_current = (current_sell_sum + total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
+          percentage_performance_single_current = performance_single_current *100
+          print(f"Total Buy €{total_single_sum('buy.csv', sName_query):.2f}")
+          print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
+          print(f"Current total sell €{current_sell_sum:.2f}")
+          print(f"Current Performance of Stock {sName_query}: {percentage_performance_single_current:.2f}%")
         else:
           print("You didn't buy stock " + sName_query + "!") 
-        #??????else:  line99????
-         # print("You didn't buy stock " + sName_query + "!")    
-      
-
   
   
   window = Tk()
@@ -155,7 +164,7 @@ heading.pack()
 
 #label defnition and positon
 stockname_text = Label(text = "Name of Stock *")
-stockid_text = Label(text = "Stock ID ")
+stockid_text = Label(text = "Stock ID (WKN / ISIN) ")
 stockprice_text = Label(text = "Price pro Share (in Euro) *")
 stockamount_text = Label(text = "Amount *")
 stockdate_text = Label(text = "Date of Transaction (DD/MM/YYYY) *")
