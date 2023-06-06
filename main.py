@@ -76,7 +76,7 @@ def sell():
     print("Stock", sName_sell, " has been saved in sell.csv successfully!")
   else:
     print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + " share(s), because you don't have (enough) of this stock!")
-    messagebox.showwarning("Trading Performance Query", "You can't sell it! You don't have (enough) of this stock!")
+    messagebox.showwarning("WARNING", "You can't sell it! You don't have (enough) of this stock!")
 
 #calculate total buy or total sell of one single stock
 def total_single_sum(filename, stock_name):
@@ -111,35 +111,40 @@ def create_window():
       #check if bought=sold and do the calculation 
         buy_single_stock_count = single_stock_count("buy.csv", sName_query)
         sell_single_stock_count = single_stock_count("sell.csv", sName_query)
-        can_be_sold = buy_single_stock_count - sell_single_stock_count
-        if can_be_sold == 0 and buy_single_stock_count != 0:
-          #print("bought=sold")
-          print(f"Bought: {buy_single_stock_count} share(s)")
-          print(f"Sold: {sell_single_stock_count} share(s)")
-          print(f"Total Buy €{total_single_sum('buy.csv', sName_query):.2f}")
-          print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
-          performance_single = (total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
-          percentage_performance_single = performance_single *100
-          print(f"Performance of Stock {sName_query}: {percentage_performance_single:+.2f}%")
-        
-      #check if bought>sold, give the current sell price and do the calculation  
-        elif can_be_sold >0:
-          #print("bought>sold")
-          print(f"Bought: {buy_single_stock_count} share(s)")
-          print(f"Sold: {sell_single_stock_count} share(s)")
-          current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
-          current_sell_sum = current_sell_price * (buy_single_stock_count - sell_single_stock_count)
-          performance_single_current = (current_sell_sum + total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
-          percentage_performance_single_current = performance_single_current *100
-          print(f"Total Buy €{total_single_sum('buy.csv', sName_query):.2f}")
-          print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
-          print(f"Current total sell €{current_sell_sum:.2f}")
-          print(f"Current Performance of Stock {sName_query}: {percentage_performance_single_current:+.2f}%")
-        else:
+        is_stock_balanced = buy_single_stock_count - sell_single_stock_count == 0
+        if buy_single_stock_count == 0:
           print("You didn't buy stock " + sName_query + "!")
-          messagebox.showwarning("Single Stock Query", "You didn't buy this stock! Please buy it first!")
+          messagebox.showwarning("WARNING", "You didn't buy this stock! Please buy it first!")      
+        else: 
+          print(f"Bought: {buy_single_stock_count} share(s)")
+          print(f"Sold: {sell_single_stock_count} share(s)")
+          buy_total_single_sum = total_single_sum('buy.csv', sName_query)
+          sell_total_single_sum = total_single_sum('sell.csv', sName_query)
+          print(f"Total Bought €{buy_total_single_sum:.2f}")
+          print(f"Total Sold €{sell_total_single_sum:.2f}")
+          if is_stock_balanced:
+            #print("bought=sold")
+            performance_single = performance(sell_total_single_sum, buy_total_single_sum)
+            print(f"Performance of Stock {sName_query}: {performance_single:+.2f}%")
+        
           
+          else: 
+            #print("bought>sold")
+            #calculate single stock performance using current sell price
+            remaining_stock_count = buy_single_stock_count - sell_single_stock_count
+            current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
+            current_sell_sum = current_sell_price * remaining_stock_count
+            performance_single_current = performance(current_sell_sum + sell_total_single_sum, buy_total_single_sum)
+            
+            
+            print(f"Current total sell €{current_sell_sum:.2f}")
+            print(f"Current Performance of Stock {sName_query}: {performance_single_current:+.2f}%")
+
+  def performance(sell_sum, buy_sum):
+    (sell_sum - buy_sum) / buy_sum * 100
   
+          
+ #windwo design 
   window = Tk()
   window.geometry("500x400")
   window.title("Redi Final Project")
@@ -147,7 +152,7 @@ def create_window():
   heading.pack()
   
   #screen.destroy()
-  
+  #windwo label, entry and button
   stockname_text = Label(window, text = "Name of Stock *")
   stockname_text.place(x = 15, y = 50)
   stockname_query = Entry(window)
@@ -165,10 +170,10 @@ screen.title("Redi Final Project")
 heading = Label(text="Trading Performance Query", bg="grey", fg="black", width="500")
 heading.pack()
 
-#label defnition and positon
+#screen label defnition and positon
 stockname_text = Label(text = "Name of Stock *")
 stockid_text = Label(text = "Stock ID (WKN / ISIN) ")
-stockprice_text = Label(text = "Price pro Share (in Euro) *")
+stockprice_text = Label(text = "Price per Share (in Euro) *")
 stockamount_text = Label(text = "Amount *")
 stockdate_text = Label(text = "Date of Transaction (DD/MM/YYYY) *")
 stockname_text.place(x = 15, y = 70)
@@ -177,7 +182,7 @@ stockprice_text.place(x = 15, y = 140)
 stockamount_text.place(x = 270, y = 140)
 stockdate_text.place(x = 15, y = 210)
 
-#entry definition and position
+#screen entry definition and position
 stockname = Entry()
 stockid = Entry()
 stockprice = Entry()
@@ -189,7 +194,7 @@ stockprice.place(x = 15, y = 170)
 stockamount.place(x = 270, y = 170)
 stockdate.place(x = 15, y = 240)
 
-#place button to buy or sell or do a single query
+#screen button to buy or sell or do a single stock query
 buy_btn = Button(screen, text ="Buy", command=buy, bg = "grey")
 sell_btn = Button(screen, text = "Sell", command=sell, bg ="grey")
 query_btn = Button(screen, text="Single Stock Query", command=create_window, bg="grey")
