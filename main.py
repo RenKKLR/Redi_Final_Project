@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import csv
 
 
@@ -75,6 +76,7 @@ def sell():
     print("Stock", sName_sell, " has been saved in sell.csv successfully!")
   else:
     print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + " share(s), because you don't have (enough) of this stock!")
+    messagebox.showwarning("Trading Performance Query", "You can't sell it! You don't have (enough) of this stock!")
 
 #calculate total buy or total sell of one single stock
 def total_single_sum(filename, stock_name):
@@ -118,7 +120,7 @@ def create_window():
           print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
           performance_single = (total_single_sum("sell.csv", sName_query)-total_single_sum("buy.csv", sName_query))/total_single_sum("buy.csv", sName_query)
           percentage_performance_single = performance_single *100
-          print(f"Performance of Stock {sName_query}: {percentage_performance_single:.2f}%")
+          print(f"Performance of Stock {sName_query}: {percentage_performance_single:+.2f}%")
         
       #check if bought>sold, give the current sell price and do the calculation  
         elif can_be_sold >0:
@@ -132,9 +134,10 @@ def create_window():
           print(f"Total Buy €{total_single_sum('buy.csv', sName_query):.2f}")
           print(f"Total Sold €{total_single_sum('sell.csv', sName_query):.2f}")
           print(f"Current total sell €{current_sell_sum:.2f}")
-          print(f"Current Performance of Stock {sName_query}: {percentage_performance_single_current:.2f}%")
+          print(f"Current Performance of Stock {sName_query}: {percentage_performance_single_current:+.2f}%")
         else:
-          print("You didn't buy stock " + sName_query + "!") 
+          print("You didn't buy stock " + sName_query + "!")
+          messagebox.showwarning("Single Stock Query", "You didn't buy this stock!")
   
   
   window = Tk()
