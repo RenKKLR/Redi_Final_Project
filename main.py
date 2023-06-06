@@ -137,13 +137,13 @@ def create_window():
           print(f"Current Performance of Stock {sName_query}: {percentage_performance_single_current:+.2f}%")
         else:
           print("You didn't buy stock " + sName_query + "!")
-          messagebox.showwarning("Single Stock Query", "You didn't buy this stock!")
-  
+          messagebox.showwarning("Single Stock Query", "You didn't buy this stock! Please buy it first!")
+          
   
   window = Tk()
   window.geometry("500x400")
   window.title("Redi Final Project")
-  heading = Label(window, text="Single Query", bg="grey", fg="black", width="500")
+  heading = Label(window, text="Single Stock Query", bg="grey", fg="black", width="500")
   heading.pack()
   
   #screen.destroy()
