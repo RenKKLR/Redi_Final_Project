@@ -91,9 +91,14 @@ def total_single_sum(filename, stock_name):
 
 #create a new window to do a single query
 def create_window():
-  def submit():
+  
+  def submit():    
     sName_query = stockname_query.get().title()
     stockname_query.delete(0, END)
+  
+    def performance(sell_sum, buy_sum):
+      return (sell_sum - buy_sum) / buy_sum  * 100
+    
     #open file buy.csv and print all buy transactions
     with open('buy.csv') as buy_file:
       buy_transactions = csv.reader(buy_file, delimiter=";")
@@ -120,13 +125,13 @@ def create_window():
           print(f"Sold: {sell_single_stock_count} share(s)")
           buy_total_single_sum = total_single_sum('buy.csv', sName_query)
           sell_total_single_sum = total_single_sum('sell.csv', sName_query)
-          print(f"Total Bought €{buy_total_single_sum:.2f}")
-          print(f"Total Sold €{sell_total_single_sum:.2f}")
+          print(f"Total Bought: €{buy_total_single_sum:.2f}")
+          print(f"Total Sold: €{sell_total_single_sum:.2f}")
           if is_stock_balanced:
             #print("bought=sold")
             performance_single = performance(sell_total_single_sum, buy_total_single_sum)
             print(f"Performance of Stock {sName_query}: {performance_single:+.2f}%")
-        
+                   
           
           else: 
             #print("bought>sold")
@@ -135,13 +140,10 @@ def create_window():
             current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
             current_sell_sum = current_sell_price * remaining_stock_count
             performance_single_current = performance(current_sell_sum + sell_total_single_sum, buy_total_single_sum)
-            
-            
+          
             print(f"Current total sell €{current_sell_sum:.2f}")
             print(f"Current Performance of Stock {sName_query}: {performance_single_current:+.2f}%")
 
-  def performance(sell_sum, buy_sum):
-    (sell_sum - buy_sum) / buy_sum * 100
   
           
  #windwo design 
