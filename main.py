@@ -3,6 +3,7 @@ from tkinter import messagebox
 import csv
 from transaction import Transaction
 
+print("Welcom to Trading Performance Query!")
 
 #save the entries in csv file buy.csv after click button Buy
 def buy():
@@ -98,14 +99,12 @@ def create_window():
     #open file buy.csv and print all buy transactions
     with open('buy.csv') as buy_file:
       buy_transactions = csv.reader(buy_file, delimiter=";")
-      next(buy_transactions)
       for buy_transaction in buy_transactions:
         if sName_query == buy_transaction[0]:
           print("Buy: ", buy_transaction)        
       #open file sell.csv and print all sell transactions       
       with open('sell.csv') as sell_file:
         sell_transactions = csv.reader(sell_file, delimiter=";")
-        next(sell_transactions)
         for sell_transaction in sell_transactions:
           if sName_query == sell_transaction[0]:
             print("Sell: ", sell_transaction)  
@@ -129,7 +128,7 @@ def create_window():
           else: 
             #calculate single stock current performance by inputting current sell price
             remaining_stock_count = buy_single_stock_count - sell_single_stock_count
-            current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
+            current_sell_price = float(input(f"Please enter the current selling price of stock {sName_query} (in Euro): "))
             current_sell_sum = current_sell_price * remaining_stock_count
             performance_single_current = performance(current_sell_sum + sell_total_single_sum, buy_total_single_sum)
           
