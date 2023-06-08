@@ -1,19 +1,17 @@
 from tkinter import *
 from tkinter import messagebox
 import csv
+from transaction import Transaction
 
 
 #save the entries in csv file buy after click button Buy
 def buy():
-  global sName_buy
-  global sAmount_buy
-  global sPrice_buy
   #get entries from input box
-  sName_buy = stockname.get().title()
-  sID_buy = stockid.get()
-  sPrice_buy = stockprice.get()
-  sAmount_buy = stockamount.get()
-  sDate_buy = stockdate.get()
+  name = stockname.get().title()
+  id = stockid.get()
+  price = stockprice.get()
+  amount = stockamount.get()
+  date = stockdate.get()
   #delete entries after submit
   stockname.delete(0, END)
   stockid.delete(0, END)
@@ -21,13 +19,14 @@ def buy():
   stockamount.delete(0, END)
   stockdate.delete(0, END)
   #save the entry in the file buy.csv
+  transaction = Transaction(name,id,price,amount,date)
   file = open("buy.csv", "a", newline="")
-  file.write(sName_buy + ";")
-  file.write(sID_buy + ";")
-  file.write(sPrice_buy + ";")
-  file.write(sAmount_buy + ";")
-  file.write(sDate_buy + "\n")
-  print("Stock", sName_buy, " has been saved in buy.csv successfully!")
+  file.write(transaction.name + ";")
+  file.write(transaction.id + ";")
+  file.write(transaction.price + ";")
+  file.write(transaction.amount + ";")
+  file.write(transaction.date + "\n")
+  print("Stock", transaction.name, "has been saved in buy.csv successfully!")
 
 #count total single stock bought or sold
 def single_stock_count(filename, stock_name):
@@ -41,15 +40,12 @@ def single_stock_count(filename, stock_name):
   return single_stock_count
 
 def sell():
-  global sName_sell
-  global sPrice_sell
-  global sAmount_sell
   #get entries from input box
-  sName_sell = stockname.get().title()
-  sID_sell = stockid.get()
-  sPrice_sell = stockprice.get()
-  sAmount_sell = stockamount.get()
-  sDate_sell = stockdate.get()
+  name = stockname.get().title()
+  id = stockid.get()
+  price = stockprice.get()
+  amount = stockamount.get()
+  date = stockdate.get()
   #delete entries after submit
   stockname.delete(0, END)
   stockid.delete(0, END)
@@ -58,24 +54,25 @@ def sell():
   stockdate.delete(0, END)
   
   #check if a stock alread has been bought enough before saving
-  buy_single_stock_count = single_stock_count("buy.csv", sName_sell)
+  buy_single_stock_count = single_stock_count("buy.csv", name)
   print("Bought: " + str(buy_single_stock_count) + " share(s)")
-  sell_single_stock_count = single_stock_count("sell.csv", sName_sell) 
+  sell_single_stock_count = single_stock_count("sell.csv", name) 
   print("Sold: " + str(sell_single_stock_count) + " share(s)")
   
   can_be_sold = buy_single_stock_count - sell_single_stock_count
 
-  if can_be_sold >= int(sAmount_sell):
+  if can_be_sold >= int(amount):
     #save the entry in the file sell.csv
+    transaction = Transaction(name,id,price,amount,date)
     file = open("sell.csv", "a", newline="")
-    file.write(sName_sell + ";")
-    file.write(sID_sell + ";")
-    file.write(sPrice_sell + ";")
-    file.write(sAmount_sell + ";")
-    file.write(sDate_sell + "\n")
-    print("Stock", sName_sell, " has been saved in sell.csv successfully!")
+    file.write(transaction.name + ";")
+    file.write(transaction.id + ";")
+    file.write(transaction.price + ";")
+    file.write(transaction.amount + ";")
+    file.write(transaction.date + "\n")
+    print("Stock", transaction.name, "has been saved in sell.csv successfully!")
   else:
-    print("You can't sell " +sName_sell+" in amount "+ sAmount_sell + " share(s), because you don't have (enough) of this stock!")
+    print("You can't sell " + transaction.name +" in amount "+ transaction.amount + " share(s), because you don't have (enough) of this stock!")
     messagebox.showwarning("WARNING", "You can't sell it! You don't have (enough) of this stock!")
 
 #calculate total buy or total sell of one single stock
@@ -119,7 +116,7 @@ def create_window():
         is_stock_balanced = buy_single_stock_count - sell_single_stock_count == 0
         if buy_single_stock_count == 0:
           print("You didn't buy stock " + sName_query + "!")
-          messagebox.showwarning("WARNING", "You didn't buy this stock! Please buy it first!")      
+          messagebox.showwarning("WARNING", "You didn't buy this stock! Please buy it first!")             
         else: 
           print(f"Bought: {buy_single_stock_count} share(s)")
           print(f"Sold: {sell_single_stock_count} share(s)")
@@ -128,33 +125,29 @@ def create_window():
           print(f"Total Bought: €{buy_total_single_sum:.2f}")
           print(f"Total Sold: €{sell_total_single_sum:.2f}")
           if is_stock_balanced:
-            #print("bought=sold")
             performance_single = performance(sell_total_single_sum, buy_total_single_sum)
-            print(f"Performance of Stock {sName_query}: {performance_single:+.2f}%")
-                   
-          
+            print(f"Performance of Stock {sName_query}: {performance_single:+.2f}%")         
           else: 
-            #print("bought>sold")
-            #calculate single stock performance using current sell price
+            #calculate single stock current performance by inputting current sell price
             remaining_stock_count = buy_single_stock_count - sell_single_stock_count
             current_sell_price = float(input(f"Please enter the current sell price of stock {sName_query} (in Euro): "))
             current_sell_sum = current_sell_price * remaining_stock_count
             performance_single_current = performance(current_sell_sum + sell_total_single_sum, buy_total_single_sum)
           
             print(f"Current total sell €{current_sell_sum:.2f}")
-            print(f"Current Performance of Stock {sName_query}: {performance_single_current:+.2f}%")
-
-  
+            print(f"Current Performance of Stock {sName_query}: {performance_single_current:+.2f}%")  
           
- #windwo design 
+  #window design 
   window = Tk()
   window.geometry("500x400")
   window.title("Redi Final Project")
   heading = Label(window, text="Single Stock Query", bg="grey", fg="black", width="500")
   heading.pack()
   
-  #screen.destroy()
-  #windwo label, entry and button
+  #could close the main screen when the query window is opened
+  #screen.destroy() 
+  
+  #window definition and position of label, entry and button
   stockname_text = Label(window, text = "Name of Stock *")
   stockname_text.place(x = 15, y = 50)
   stockname_query = Entry(window)
@@ -172,7 +165,7 @@ screen.title("Redi Final Project")
 heading = Label(text="Trading Performance Query", bg="grey", fg="black", width="500")
 heading.pack()
 
-#screen label defnition and positon
+#screen label definition and positon
 stockname_text = Label(text = "Name of Stock *")
 stockid_text = Label(text = "Stock ID (WKN / ISIN) ")
 stockprice_text = Label(text = "Price per Share (in Euro) *")
