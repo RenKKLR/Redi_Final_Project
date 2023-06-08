@@ -4,7 +4,7 @@ import csv
 from transaction import Transaction
 
 
-#save the entries in csv file buy after click button Buy
+#save the entries in csv file buy.csv after click button Buy
 def buy():
   #get entries from input box
   name = stockname.get().title()
@@ -26,7 +26,7 @@ def buy():
   file.write(transaction.price + ";")
   file.write(transaction.amount + ";")
   file.write(transaction.date + "\n")
-  print("Stock", transaction.name, "has been saved in buy.csv successfully!")
+  print("Stock", transaction.name, "in amount", transaction.amount,  "share(s) has been saved in buy.csv successfully!")
 
 #count total single stock bought or sold
 def single_stock_count(filename, stock_name):
@@ -60,17 +60,16 @@ def sell():
   print("Sold: " + str(sell_single_stock_count) + " share(s)")
   
   can_be_sold = buy_single_stock_count - sell_single_stock_count
-
+  transaction = Transaction(name,id,price,amount,date)
   if can_be_sold >= int(amount):
     #save the entry in the file sell.csv
-    transaction = Transaction(name,id,price,amount,date)
     file = open("sell.csv", "a", newline="")
     file.write(transaction.name + ";")
     file.write(transaction.id + ";")
     file.write(transaction.price + ";")
     file.write(transaction.amount + ";")
     file.write(transaction.date + "\n")
-    print("Stock", transaction.name, "has been saved in sell.csv successfully!")
+    print("Stock", transaction.name, "in amount", transaction.amount, "share(s) has been saved in sell.csv successfully!")
   else:
     print("You can't sell " + transaction.name +" in amount "+ transaction.amount + " share(s), because you don't have (enough) of this stock!")
     messagebox.showwarning("WARNING", "You can't sell it! You don't have (enough) of this stock!")
@@ -161,7 +160,7 @@ def create_window():
 #screen design
 screen = Tk()
 screen.geometry("500x500")
-screen.title("Redi Final Project")
+screen.title("ReDi Final Project")
 heading = Label(text="Trading Performance Query", bg="grey", fg="black", width="500")
 heading.pack()
 
