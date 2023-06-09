@@ -72,8 +72,8 @@ def sell():
     file.write(transaction.date + "\n")
     print("Stock", transaction.name, "in amount", transaction.amount, "share(s) has been saved in sell.csv successfully!")
   else:
-    print("You can't sell " + transaction.name +" in amount "+ transaction.amount + " share(s), because you don't have (enough) of this stock!")
-    messagebox.showwarning("WARNING", "You can't sell it! You don't have (enough) of this stock!")
+    print("You can't sell " + transaction.name +" in amount "+ transaction.amount + " share(s), because you don't have (enough of) this stock!")
+    messagebox.showwarning("WARNING", "You can't sell it! You don't have (enough of) this stock!")
 
 #calculate total buy or total sell of one single stock
 def total_single_sum(filename, stock_name):
